@@ -1,0 +1,5 @@
+# Ignore file sampah
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
