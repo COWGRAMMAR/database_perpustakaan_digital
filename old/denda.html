@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Denda - Test API</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: system-ui, sans-serif; }
+body { background: #f5f7fa; padding: 20px; color: #333; }
+h1 { font-size: 22px; margin-bottom: 20px; }
+.nav { background: #2c3e50; padding: 12px 20px; border-radius: 8px; margin-bottom: 24px; display: flex; gap: 16px; }
+.nav a { color: #fff; text-decoration: none; font-weight: 500; padding: 4px 0; border-bottom: 2px solid transparent; }
+.nav a:hover { border-color: #fff; }
+.card { background: #fff; border-radius: 8px; padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+.row { display: flex; gap: 20px; }
+.col { flex: 1; }
+label { display: block; font-weight: 600; margin-bottom: 4px; font-size: 14px; }
+input, select { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; margin-bottom: 12px; }
+button { background: #c62828; color: #fff; border: none; padding: 10px 24px; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; }
+button:hover { background: #e53935; }
+button.bayar { background: #2e7d32; }
+button.bayar:hover { background: #388e3c; }
+.result-box { margin-top: 12px; padding: 12px; border-radius: 6px; font-weight: 500; }
+.sukses { background: #e8f5e9; color: #2e7d32; }
+.error { background: #ffebee; color: #c62828; }
+.info { background: #e3f2fd; color: #1565c0; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #eee; }
+th { background: #f8f9fa; font-weight: 600; color: #555; }
+tr:hover { background: #f8f9fa; }
+.badge { display: inline-block; padding: 3px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+.badge-red { background: #ffebee; color: #c62828; }
+.badge-green { background: #e8f5e9; color: #2e7d32; }
+.loading { text-align: center; padding: 20px; color: #888; }
+.total-box { font-size: 24px; font-weight: 700; text-align: center; padding: 20px; background: #fff3e0; border-radius: 8px; margin-bottom: 12px; }
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <a href="index.html">&#128218; Buku</a>
+  <a href="pinjam.html">&#128230; Peminjaman</a>
+  <a href="denda.html">&#128176; Denda</a>
+  <a href="laporan.html">&#128202; Laporan</a>
+</div>
+
+<h1>&#128176; Denda</h1>
+
+<div class="row">
+  <div class="col">
+    <div class="card">
+      <h2 style="font-size:16px;margin-bottom:12px;">Cek Denda User</h2>
+      <label for="cek-user-id">ID User</label>
+      <input type="number" id="cek-user-id" placeholder="Contoh: 5">
+      <button type="button" onclick="cekDenda()">&#128269; Cek Denda</button>
+      <div id="denda-result"></div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card">
+      <h2 style="font-size:16px;margin-bottom:12px;">Bayar Denda</h2>
+      <label for="bayar-denda-id">ID Denda</label>
+      <input type="number" id="bayar-denda-id" placeholder="Masukkan ID denda">
+      <label for="metode">Metode Pembayaran</label>
+      <select id="metode">
+        <option value="E-Wallet">E-Wallet</option>
+        <option value="Bank Transfer">Bank Transfer</option>
+      </select>
+      <button type="button" class="bayar" onclick="bayarDenda()">&#128176; Bayar</button>
+      <div id="bayar-result"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+async function cekDenda() {
+  const idUser = parseInt(document.getElementById('cek-user-id').value);
+  const resultEl = document.getElementById('denda-result');
+  if (!idUser) { resultEl.innerHTML = '<div class="result-box error">Isi ID User!</div>'; return; }
+
+  resultEl.innerHTML = '<p class="loading">Memuat...</p>';
+
+  try {
+    const res = await fetch(`../api/denda.php?id_user=${idUser}`);
+    const json = await res.json();
+    if (json.status !== 'sukses') { resultEl.innerHTML = `<div class="result-box error">${json.error}</div>`; return; }
+
+    const data = json.data;
+    if (data.daftar_denda.length === 0) {
+      resultEl.innerHTML = '<div class="result-box info">Tidak ada denda yang belum dibayar. Mantap!</div>';
+      return;
+    }
+
+    let html = `<div class="total-box">Total Denda: Rp${parseFloat(data.total_denda).toLocaleString()}</div>`;
+    html += '<table><thead><tr><th>ID Denda</th><th>Judul Buku</th><th>Jumlah</th><th>Status</th><th>Tgl Pinjam</th><th>Batas Kembali</th></tr></thead><tbody>';
+
+    data.daftar_denda.forEach(d => {
+      html += `<tr>
+        <td>${d.fine_id}</td>
+        <td>${d.judul_buku}</td>
+        <td><strong>Rp${parseFloat(d.amount).toLocaleString()}</strong></td>
+        <td><span class="badge badge-red">${d.fine_status}</span></td>
+        <td>${d.borrow_date}</td>
+        <td>${d.due_date}</td>
+      </tr>`;
+    });
+    html += '</tbody></table>';
+    resultEl.innerHTML = html;
+  } catch(e) {
+    resultEl.innerHTML = `<div class="result-box error">${e.message}</div>`;
+  }
+}
+
+async function bayarDenda() {
+  const idDenda = parseInt(document.getElementById('bayar-denda-id').value);
+  const metode = document.getElementById('metode').value;
+  const resultEl = document.getElementById('bayar-result');
+
+  if (!idDenda) { resultEl.innerHTML = '<div class="result-box error">Isi ID Denda!</div>'; return; }
+
+  resultEl.innerHTML = '<p class="loading">Memproses pembayaran...</p>';
+
+  try {
+    const res = await fetch('../api/denda.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id_denda: idDenda, metode: metode })
+    });
+    const json = await res.json();
+    if (json.status === 'sukses') {
+      resultEl.innerHTML = `<div class="result-box sukses">${json.data.hasil}</div>`;
+      // Refresh data denda
+      const cekId = document.getElementById('cek-user-id').value;
+      if (cekId) setTimeout(() => cekDenda(), 1500);
+    } else {
+      resultEl.innerHTML = `<div class="result-box error">${json.error}</div>`;
+    }
+  } catch(e) {
+    resultEl.innerHTML = `<div class="result-box error">${e.message}</div>`;
+  }
+}
+</script>
+</body>
+</html>

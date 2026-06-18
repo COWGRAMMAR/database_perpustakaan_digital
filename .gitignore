@@ -3,3 +3,8 @@
 *.tmp
 .DS_Store
 Thumbs.db
+
+AGENTS.md
+.env
+links.md
+.opencode
