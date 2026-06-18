@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Laporan - Test API</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: system-ui, sans-serif; }
+body { background: #f5f7fa; padding: 20px; color: #333; }
+h1 { font-size: 22px; margin-bottom: 20px; }
+.nav { background: #2c3e50; padding: 12px 20px; border-radius: 8px; margin-bottom: 24px; display: flex; gap: 16px; }
+.nav a { color: #fff; text-decoration: none; font-weight: 500; padding: 4px 0; border-bottom: 2px solid transparent; }
+.nav a:hover { border-color: #fff; }
+.card { background: #fff; border-radius: 8px; padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+.row { display: flex; gap: 20px; flex-wrap: wrap; }
+.col { flex: 1; min-width: 200px; }
+label { display: block; font-weight: 600; margin-bottom: 4px; font-size: 14px; }
+input, select { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; margin-bottom: 12px; }
+button { background: #1565c0; color: #fff; border: none; padding: 10px 24px; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; }
+button:hover { background: #1976d2; }
+button.orange { background: #e65100; }
+button.orange:hover { background: #ef6c00; }
+.result-box { margin-top: 12px; padding: 12px; border-radius: 6px; font-weight: 500; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 8px; }
+th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #eee; }
+th { background: #f8f9fa; font-weight: 600; color: #555; }
+tr:hover { background: #f8f9fa; }
+.metric { text-align: center; padding: 20px; background: #e3f2fd; border-radius: 8px; }
+.metric .num { font-size: 28px; font-weight: 700; color: #1565c0; }
+.metric .label { font-size: 13px; color: #666; margin-top: 4px; }
+.loading { text-align: center; padding: 20px; color: #888; }
+.error { background: #ffebee; color: #c62828; padding: 12px; border-radius: 6px; }
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <a href="index.html">&#128218; Buku</a>
+  <a href="pinjam.html">&#128230; Peminjaman</a>
+  <a href="denda.html">&#128176; Denda</a>
+  <a href="laporan.html">&#128202; Laporan</a>
+</div>
+
+<h1>&#128202; Laporan</h1>
+
+<div class="row">
+  <div class="col">
+    <div class="card">
+      <h2 style="font-size:16px;margin-bottom:12px;">Laporan Bulanan</h2>
+      <label for="bulan">Bulan (1-12)</label>
+      <input type="number" id="bulan" value="6" min="1" max="12">
+      <label for="tahun">Tahun</label>
+      <input type="number" id="tahun" value="2026" min="2020" max="2030">
+      <button type="button" onclick="laporanBulanan()">&#128202; Lihat Laporan</button>
+      <div id="bulanan-result"></div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card">
+      <h2 style="font-size:16px;margin-bottom:12px;">Buku Terlaris</h2>
+      <button type="button" class="orange" onclick="bukuTerlaris()">&#128293; Lihat Top 10</button>
+      <div id="terlaris-result"></div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card">
+      <h2 style="font-size:16px;margin-bottom:12px;">Anggota Teraktif</h2>
+      <button type="button" class="orange" onclick="anggotaTeraktif()">&#128170; Lihat Top 10</button>
+      <div id="aktif-result"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+async function laporanBulanan() {
+  const bulan = parseInt(document.getElementById('bulan').value);
+  const tahun = parseInt(document.getElementById('tahun').value);
+  const resultEl = document.getElementById('bulanan-result');
+
+  if (!bulan || !tahun) { resultEl.innerHTML = '<div class="error">Isi bulan dan tahun!</div>'; return; }
+
+  resultEl.innerHTML = '<p class="loading">Memuat laporan...</p>';
+
+  try {
+    const res = await fetch(`../api/laporan.php?bulan=${bulan}&tahun=${tahun}`);
+    const json = await res.json();
+    if (json.status !== 'sukses') { resultEl.innerHTML = `<div class="error">${json.error}</div>`; return; }
+
+    const data = json.data;
+    let html = '';
+
+    // Tiap array dalam data berisi 1 baris hasil dari masing-masing SELECT di SP
+    // SP laporan_bulanan return 4 result sets
+    data.forEach((section, idx) => {
+      const row = section[0];
+      const key = Object.keys(row)[0];
+      const val = Object.values(row)[0];
+
+      // section terakhir punya { judul_buku, total_dipinjam }
+      if (row.judul_buku) {
+        html += `<div class="metric"><div class="num">${row.judul_buku}</div><div class="label">Buku terpopuler (${row.total_dipinjam}x dipinjam)</div></div>`;
+      } else if (val) {
+        let label = '';
+        if (val.includes('Peminjaman')) label = 'Total Peminjaman';
+        else if (val.includes('Denda')) label = 'Total Denda Masuk';
+        else if (val.includes('Member')) label = 'Member Baru';
+        else label = 'Info';
+
+        const num = val.replace(/[^0-9]/g, '');
+        html += `<div class="metric"><div class="num">${num || val.split(': ')[1] || val}</div><div class="label">${label}</div></div>`;
+      }
+    });
+
+    if (!html) html = '<p>Tidak ada data untuk periode ini.</p>';
+    resultEl.innerHTML = html;
+  } catch(e) {
+    resultEl.innerHTML = `<div class="error">${e.message}</div>`;
+  }
+}
+
+async function bukuTerlaris() {
+  const resultEl = document.getElementById('terlaris-result');
+  resultEl.innerHTML = '<p class="loading">Memuat...</p>';
+
+  try {
+    const res = await fetch('../api/laporan.php?jenis=buku_terlaris');
+    const json = await res.json();
+    if (json.status !== 'sukses') { resultEl.innerHTML = `<div class="error">${json.error}</div>`; return; }
+
+    const data = json.data;
+    if (data.length === 0) { resultEl.innerHTML = '<p>Belum ada data peminjaman.</p>'; return; }
+
+    let html = '<table><thead><tr><th>#</th><th>Judul Buku</th><th>Total Dipinjam</th></tr></thead><tbody>';
+    data.forEach((b, i) => {
+      html += `<tr><td>${i+1}</td><td>${b.title}</td><td><strong>${b.total_dipinjam}x</strong></td></tr>`;
+    });
+    html += '</tbody></table>';
+    resultEl.innerHTML = html;
+  } catch(e) {
+    resultEl.innerHTML = `<div class="error">${e.message}</div>`;
+  }
+}
+
+async function anggotaTeraktif() {
+  const resultEl = document.getElementById('aktif-result');
+  resultEl.innerHTML = '<p class="loading">Memuat...</p>';
+
+  try {
+    const res = await fetch('../api/laporan.php?jenis=anggota_teraktif');
+    const json = await res.json();
+    if (json.status !== 'sukses') { resultEl.innerHTML = `<div class="error">${json.error}</div>`; return; }
+
+    const data = json.data;
+    if (data.length === 0) { resultEl.innerHTML = '<p>Belum ada data peminjaman.</p>'; return; }
+
+    let html = '<table><thead><tr><th>#</th><th>Nama</th><th>Username</th><th>Total Pinjam</th></tr></thead><tbody>';
+    data.forEach((a, i) => {
+      html += `<tr><td>${i+1}</td><td>${a.full_name}</td><td>${a.username}</td><td><strong>${a.total_pinjam}x</strong></td></tr>`;
+    });
+    html += '</tbody></table>';
+    resultEl.innerHTML = html;
+  } catch(e) {
+    resultEl.innerHTML = `<div class="error">${e.message}</div>`;
+  }
+}
+</script>
+</body>
+</html>
