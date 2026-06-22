@@ -39,10 +39,8 @@ if ($currentRole === 'Admin') {
         ['label' => 'Profil Saya',        'file' => 'profile.php',          'href' => $base . 'pembaca/profile.php'],
         ['label' => 'Katalog Buku',       'file' => 'catalog.php',          'href' => $base . 'pembaca/catalog.php'],
         ['label' => 'Riwayat Membaca',    'file' => 'reading_history.php',  'href' => $base . 'pembaca/reading_history.php'],
-        ['label' => 'Bookmark',           'file' => 'bookmarks.php',        'href' => $base . 'pembaca/bookmarks.php'],
         ['label' => 'Wishlist',           'file' => 'wishlist.php',         'href' => $base . 'pembaca/wishlist.php'],
         ['label' => 'Peminjaman Saya',    'file' => 'borrowings.php',       'href' => $base . 'pembaca/borrowings.php'],
-        ['label' => 'Ulasan & Rating',    'file' => 'reviews.php',          'href' => $base . 'pembaca/reviews.php'],
         ['label' => 'Denda & Bayar',      'file' => 'fines.php',            'href' => $base . 'pembaca/fines.php'],
     ];
 }

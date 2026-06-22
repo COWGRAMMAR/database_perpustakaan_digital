@@ -139,6 +139,8 @@ if (isset($_GET['delete'])) {
 $editData = null;
 $editRole = '';
 $editProfile = [];
+$staffProfile = [];
+$memberProfile = [];
 if (isset($_GET['edit'])) {
     $id = (int) $_GET['edit'];
     $stmt = $conn->prepare("SELECT * FROM users WHERE id = ?");
@@ -155,9 +157,9 @@ if (isset($_GET['edit'])) {
     $editRole = $roleRow['role_name'] ?? '';
 
     if ($editRole === 'Staff') {
-        $editProfile = $conn->query("SELECT * FROM staff_profiles WHERE user_id = $id")->fetch_assoc() ?? [];
+        $staffProfile = $conn->query("SELECT * FROM staff_profiles WHERE user_id = $id")->fetch_assoc() ?? [];
     } elseif ($editRole === 'Pembaca') {
-        $editProfile = $conn->query("SELECT * FROM member_profiles WHERE user_id = $id")->fetch_assoc() ?? [];
+        $memberProfile = $conn->query("SELECT * FROM member_profiles WHERE user_id = $id")->fetch_assoc() ?? [];
     }
 }
 
@@ -240,13 +242,13 @@ require_once '../includes/header.php';
                 <p class="text-xs font-medium text-gray-500 mb-2">Profil Staff</p>
                 <div class="mb-2">
                     <input type="text" name="staff_number" placeholder="Nomor Induk Staff"
-                        value="<?= htmlspecialchars($editProfile['staff_number'] ?? '') ?>"
+                        value="<?= htmlspecialchars($staffProfile['staff_number'] ?? '') ?>"
                         class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm mb-2">
                     <input type="text" name="staff_full_name" placeholder="Nama Lengkap Staff"
-                        value="<?= htmlspecialchars($editProfile['full_name'] ?? '') ?>"
+                        value="<?= htmlspecialchars($staffProfile['full_name'] ?? '') ?>"
                         class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm mb-2">
                     <input type="text" name="staff_phone" placeholder="No. Telepon Staff"
-                        value="<?= htmlspecialchars($editProfile['phone_number'] ?? '') ?>"
+                        value="<?= htmlspecialchars($staffProfile['phone_number'] ?? '') ?>"
                         class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm">
                 </div>
 
@@ -254,19 +256,19 @@ require_once '../includes/header.php';
                 <p class="text-xs font-medium text-gray-500 mb-2">Profil Pembaca</p>
                 <div class="mb-2">
                     <input type="text" name="member_number" placeholder="Nomor Kartu Anggota"
-                        value="<?= htmlspecialchars($editProfile['member_number'] ?? '') ?>"
+                        value="<?= htmlspecialchars($memberProfile['member_number'] ?? '') ?>"
                         class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm mb-2">
                     <input type="text" name="member_full_name" placeholder="Nama Lengkap Pembaca"
-                        value="<?= htmlspecialchars($editProfile['full_name'] ?? '') ?>"
+                        value="<?= htmlspecialchars($memberProfile['full_name'] ?? '') ?>"
                         class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm mb-2">
                     <textarea name="member_address" placeholder="Alamat" rows="2"
-                        class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm mb-2"><?= htmlspecialchars($editProfile['address'] ?? '') ?></textarea>
+                        class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm mb-2"><?= htmlspecialchars($memberProfile['address'] ?? '') ?></textarea>
                     <input type="text" name="member_phone" placeholder="No. Telepon Pembaca"
-                        value="<?= htmlspecialchars($editProfile['phone_number'] ?? '') ?>"
+                        value="<?= htmlspecialchars($memberProfile['phone_number'] ?? '') ?>"
                         class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm mb-2">
                     <select name="membership_type" class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm">
                         <?php foreach (['Free', 'Premium'] as $mt): ?>
-                            <option value="<?= $mt ?>" <?= ($editProfile['membership_type'] ?? '') === $mt ? 'selected' : '' ?>><?= $mt ?></option>
+                            <option value="<?= $mt ?>" <?= ($memberProfile['membership_type'] ?? '') === $mt ? 'selected' : '' ?>><?= $mt ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>

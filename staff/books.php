@@ -219,6 +219,7 @@ require_once '../includes/header.php';
                         <th class="py-2 pr-2">Penerbit</th>
                         <th class="py-2 pr-2">Penulis</th>
                         <th class="py-2 pr-2">Kategori</th>
+                        <th class="py-2 pr-2 text-center">File</th>
                         <th class="py-2 pr-2 text-right">Aksi</th>
                     </tr>
                 </thead>
@@ -230,6 +231,9 @@ require_once '../includes/header.php';
                                 <td class="py-2 pr-2 text-gray-700"><?= htmlspecialchars($b['publisher_name'] ?? '-') ?></td>
                                 <td class="py-2 pr-2 text-gray-700"><?= htmlspecialchars($b['author_names'] ?? '-') ?></td>
                                 <td class="py-2 pr-2 text-gray-700"><?= htmlspecialchars($b['category_names'] ?? '-') ?></td>
+                                <td class="py-2 pr-2 text-center whitespace-nowrap">
+                                    <a href="book_files.php?book_id=<?= $b['id'] ?>" class="text-indigo-600 hover:underline">File Buku</a>
+                                </td>
                                 <td class="py-2 pr-2 text-right whitespace-nowrap">
                                     <a href="?edit=<?= $b['id'] ?>" class="text-indigo-600 hover:underline mr-3">Edit</a>
                                     <a href="?delete=<?= $b['id'] ?>" onclick="return confirm('Yakin hapus buku ini?')" class="text-red-600 hover:underline">Hapus</a>

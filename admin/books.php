@@ -36,6 +36,7 @@ require_once '../includes/header.php';
                     <th class="py-2 pr-2">Penulis</th>
                     <th class="py-2 pr-2">Kategori</th>
                     <th class="py-2 pr-2">Tahun</th>
+                    <th class="py-2 pr-2 text-center">File</th>
                 </tr>
             </thead>
             <tbody>
@@ -48,6 +49,9 @@ require_once '../includes/header.php';
                             <td class="py-2 pr-2 text-gray-700"><?= htmlspecialchars($b['author_names'] ?? '-') ?></td>
                             <td class="py-2 pr-2 text-gray-700"><?= htmlspecialchars($b['category_names'] ?? '-') ?></td>
                             <td class="py-2 pr-2 text-gray-700"><?= htmlspecialchars($b['publication_year'] ?? '-') ?></td>
+                            <td class="py-2 pr-2 text-center">
+                                <a href="book_files.php?book_id=<?= $b['id'] ?>" class="text-indigo-600 hover:underline">Lihat</a>
+                            </td>
                         </tr>
                     <?php endwhile; ?>
                 <?php else: ?>

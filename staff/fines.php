@@ -12,21 +12,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bayar'])) {
     $fine_id = (int)$_POST['fine_id'];
     $payment_method = $_POST['payment_method'];
 
-    $stmt = $conn->prepare("CALL sp_bayar_denda(?, ?)");
-    $stmt->bind_param('is', $fine_id, $payment_method);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $row = $result->fetch_assoc();
-    $hasil = $row['hasil'] ?? 'Terjadi kesalahan.';
+    // Validasi di PHP sebelum memanggil stored procedure agar pesan error lebih jelas
+    $fineRow = $conn->query("SELECT fine_status FROM fines WHERE id = $fine_id")->fetch_assoc();
+    if (!$fineRow) {
+        $hasil = 'Fine ID tidak ditemukan.';
+    } elseif ($fineRow['fine_status'] === 'Lunas') {
+        $hasil = 'Denda sudah lunas.';
+    } else {
+        $stmt = $conn->prepare("CALL sp_bayar_denda(?, ?)");
+        if (!$stmt) {
+            $hasil = 'Gagal menyiapkan prosedur: ' . $conn->error;
+        } else {
+            $stmt->bind_param('is', $fine_id, $payment_method);
+            if (!$stmt->execute()) {
+                // Jika eksekusi gagal, ambil pesan error dari statement
+                $hasil = 'Eksekusi prosedur gagal: ' . $stmt->error;
+            } else {
+                $result = $stmt->get_result();
+                $row = $result ? $result->fetch_assoc() : null;
+                $hasil = $row['hasil'] ?? 'Terjadi kesalahan.';
+            }
+            $stmt->close();
+            while ($conn->more_results() && $conn->next_result()) { /* flush */ }
+        }
+    }
 
-    // setelah CALL sp_bayar_denda dan $hasil didapat, tambahkan:
+    // setelah prosedur / validasi dan $hasil didapat, catat audit jika berhasil
     if (str_contains($hasil, 'berhasil')) {
         logAudit($conn, $_SESSION['user_id'], 'VERIFIKASI_BAYAR', 'fines',
             "Staff memverifikasi pembayaran denda ID $fine_id via $payment_method");
     }
-
-    $stmt->close();
-    while ($conn->more_results() && $conn->next_result()) { /* flush */ }
 }
 
 // Filter status
@@ -98,33 +113,35 @@ require_once '../includes/header.php';
                     </span>
                 </td>
                 <td class="p-2 text-center">
-                    <?php if ($row['fine_status'] === 'Belum bayar'): ?>
-                    <button onclick="document.getElementById('modal-<?= $row['fine_id'] ?>').classList.remove('hidden')"
-                        class="bg-blue-600 text-white px-2 py-1 rounded text-xs">Bayar</button>
+                    <?php if ($row['fine_status'] === 'Belum bayar' && !empty($row['return_date'])): ?>
+                            <button onclick="document.getElementById('modal-<?= $row['fine_id'] ?>').classList.remove('hidden')"
+                                class="bg-blue-600 text-white px-2 py-1 rounded text-xs">Bayar</button>
 
-                    <div id="modal-<?= $row['fine_id'] ?>" class="hidden fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-                        <div class="bg-white p-5 rounded shadow w-80">
-                            <h3 class="font-bold mb-3">Bayar Denda</h3>
-                            <form method="POST">
-                                <input type="hidden" name="fine_id" value="<?= $row['fine_id'] ?>">
-                                <label class="block text-sm mb-1">Metode Pembayaran</label>
-                                <select name="payment_method" class="w-full border rounded p-2 mb-3" required>
-                                    <option value="E-Wallet">E-Wallet</option>
-                                    <option value="Bank Transfer">Bank Transfer</option>
-                                </select>
-                                <div class="flex justify-end gap-2">
-                                    <button type="button" onclick="document.getElementById('modal-<?= $row['fine_id'] ?>').classList.add('hidden')"
-                                        class="px-3 py-1 rounded bg-gray-200">Batal</button>
-                                    <button type="submit" name="bayar" value="1"
-                                        onclick="return confirm('Konfirmasi pembayaran denda ini?')"
-                                        class="px-3 py-1 rounded bg-blue-600 text-white">Konfirmasi</button>
+                            <div id="modal-<?= $row['fine_id'] ?>" class="hidden fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+                                <div class="bg-white p-5 rounded shadow w-80">
+                                    <h3 class="font-bold mb-3">Bayar Denda</h3>
+                                    <form method="POST">
+                                        <input type="hidden" name="fine_id" value="<?= $row['fine_id'] ?>">
+                                        <label class="block text-sm mb-1">Metode Pembayaran</label>
+                                        <select name="payment_method" class="w-full border rounded p-2 mb-3" required>
+                                            <option value="E-Wallet">E-Wallet</option>
+                                            <option value="Bank Transfer">Bank Transfer</option>
+                                        </select>
+                                        <div class="flex justify-end gap-2">
+                                            <button type="button" onclick="document.getElementById('modal-<?= $row['fine_id'] ?>').classList.add('hidden')"
+                                                class="px-3 py-1 rounded bg-gray-200">Batal</button>
+                                            <button type="submit" name="bayar" value="1"
+                                                onclick="return confirm('Konfirmasi pembayaran denda ini?')"
+                                                class="px-3 py-1 rounded bg-blue-600 text-white">Konfirmasi</button>
+                                        </div>
+                                    </form>
                                 </div>
-                            </form>
-                        </div>
-                    </div>
-                    <?php else: ?>
-                        -
-                    <?php endif; ?>
+                            </div>
+                        <?php elseif ($row['fine_status'] === 'Belum bayar' && empty($row['return_date'])): ?>
+                            <span class="text-xs text-gray-500">Belum dikembalikan</span>
+                        <?php else: ?>
+                            -
+                        <?php endif; ?>
                 </td>
             </tr>
             <?php endwhile; ?>

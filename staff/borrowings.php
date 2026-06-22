@@ -177,10 +177,12 @@ require_once '../includes/header.php';
                                     <span class="px-2 py-0.5 rounded text-xs <?= $badge ?>"><?= htmlspecialchars($b['status']) ?></span>
                                 </td>
                                 <td class="py-2 pr-2 text-right">
-                                    <?php if ($b['status'] !== 'Kembali' && $b['status'] !== 'Terlambat'): ?>
-                                        <a href="?return=<?= $b['id'] ?>" onclick="return confirm('Proses pengembalian buku ini?')" class="text-indigo-600 hover:underline">Kembalikan</a>
-                                    <?php elseif ($b['status'] === 'Terlambat' && !$b['return_date']): ?>
-                                        <a href="?return=<?= $b['id'] ?>" onclick="return confirm('Proses pengembalian buku ini (terlambat)?')" class="text-red-600 hover:underline">Kembalikan</a>
+                                    <?php if (empty($b['return_date'])): ?>
+                                        <?php if ($b['status'] === 'Terlambat'): ?>
+                                            <a href="?return=<?= $b['id'] ?>" onclick="return confirm('Proses pengembalian buku ini (terlambat)?')" class="text-red-600 hover:underline">Kembalikan</a>
+                                        <?php else: ?>
+                                            <a href="?return=<?= $b['id'] ?>" onclick="return confirm('Proses pengembalian buku ini?')" class="text-indigo-600 hover:underline">Kembalikan</a>
+                                        <?php endif; ?>
                                     <?php else: ?>
                                         <span class="text-gray-400">-</span>
                                     <?php endif; ?>

@@ -6,8 +6,17 @@
  */
 function logAudit($conn, $user_id, $action, $table_name, $description) {
     $ip = $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
-    $stmt = $conn->prepare("INSERT INTO audit_logs (user_id, action, table_name, description, ip_address) VALUES (?, ?, ?, ?, ?)");
+    $sql = "INSERT INTO audit_logs (user_id, `action`, table_name, description, ip_address) VALUES (?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        error_log('Audit log prepare failed: ' . $conn->error . ' SQL: ' . $sql);
+        return false;
+    }
     $stmt->bind_param('issss', $user_id, $action, $table_name, $description, $ip);
-    $stmt->execute();
+    if (!$stmt->execute()) {
+        error_log('Audit log execute failed: ' . $stmt->error);
+        $stmt->close();
+        return false;
+    }
     $stmt->close();
 }
