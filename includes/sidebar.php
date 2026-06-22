@@ -19,9 +19,8 @@ if ($currentRole === 'Admin') {
         ['label' => 'Data Buku',         'file' => 'books.php',        'href' => $base . 'admin/books.php'],
         ['label' => 'Master Data Buku',  'file' => 'master_data.php',  'href' => $base . 'admin/master_data.php'],
         ['label' => 'Peminjaman',        'file' => 'borrowings.php',   'href' => $base . 'admin/borrowings.php'],
-        ['label' => 'Denda',             'file' => 'fines.php',        'href' => $base . 'admin/fines.php'],
-        ['label' => 'Pembayaran',        'file' => 'payments.php',     'href' => $base . 'admin/payments.php'],
-        ['label' => 'Laporan',           'file' => 'reports.php',      'href' => $base . 'admin/reports.php'],
+        ['label' => 'Denda & Bayar',     'file' => 'fines.php',        'href' => $base . 'admin/fines.php'],
+        ['label' => 'Laporan',           'file' => 'laporan.php',      'href' => $base . 'admin/laporan.php'],
         ['label' => 'Audit Log',         'file' => 'audit_log.php',    'href' => $base . 'admin/audit_log.php'],
     ];
 } elseif ($currentRole === 'Staff') {
@@ -30,7 +29,7 @@ if ($currentRole === 'Admin') {
         ['label' => 'Data Buku',         'file' => 'books.php',        'href' => $base . 'staff/books.php'],
         ['label' => 'Master Data Buku',  'file' => 'master_data.php',  'href' => $base . 'staff/master_data.php'],
         ['label' => 'Peminjaman',        'file' => 'borrowings.php',   'href' => $base . 'staff/borrowings.php'],
-        ['label' => 'Denda',             'file' => 'fines.php',        'href' => $base . 'staff/fines.php'],
+        ['label' => 'Denda & Bayar',     'file' => 'fines.php',        'href' => $base . 'staff/fines.php'],
         ['label' => 'Data Pembaca',      'file' => 'members.php',      'href' => $base . 'staff/members.php'],
         ['label' => 'Audit System',      'file' => 'audit_log.php',    'href' => $base . 'staff/audit_log.php'],
     ];
@@ -44,7 +43,7 @@ if ($currentRole === 'Admin') {
         ['label' => 'Wishlist',           'file' => 'wishlist.php',         'href' => $base . 'pembaca/wishlist.php'],
         ['label' => 'Peminjaman Saya',    'file' => 'borrowings.php',       'href' => $base . 'pembaca/borrowings.php'],
         ['label' => 'Ulasan & Rating',    'file' => 'reviews.php',          'href' => $base . 'pembaca/reviews.php'],
-        ['label' => 'Denda & Bayar',      'file' => 'payments.php',         'href' => $base . 'pembaca/payments.php'],
+        ['label' => 'Denda & Bayar',      'file' => 'fines.php',            'href' => $base . 'pembaca/fines.php'],
     ];
 }
 ?>
