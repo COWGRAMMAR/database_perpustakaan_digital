@@ -25,7 +25,7 @@
 | 19 | `payments` | Transaksi pembayaran denda |
 | 20 | `audit_logs` | Log aktivitas Staff/Admin |
 
-> Skema lengkap kolom & tipe data: lihat `proposal.md` di root project (sudah dikoreksi dari typo asli: `tittle`→`title`, `fune_id`→`fine_id`, `last_accesed`→`last_accessed`, `phone_number` INT→VARCHAR(15)).
+> Skema lengkap kolom & tipe data: lihat [`docs/proposal.md`](proposal.md) (sudah dikoreksi dari typo asli: `tittle`→`title`, `fune_id`→`fine_id`, `last_accesed`→`last_accessed`, `phone_number` INT→VARCHAR(15)).
 
 ## Trigger
 

@@ -1,11 +1,35 @@
-# Sistem Perpustakaan Digital
+#  Sistem Perpustakaan Digital
 
-Aplikasi web CRUD untuk manajemen perpustakaan digital, dibangun sebagai tugas kuliah (mata kuliah Sisbad). Mendukung 3 role pengguna: **Admin**, **Staff**, dan **Pembaca**, masing-masing dengan hak akses berbeda.
+![PHP](https://img.shields.io/badge/PHP-777BB4?style=flat&logo=php&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=flat&logo=mysql&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=flat&logo=tailwind-css&logoColor=white)
+![XAMPP](https://img.shields.io/badge/XAMPP-FB7A24?style=flat&logo=xampp&logoColor=white)
+![Status](https://img.shields.io/badge/Status-Selesai-2ea44f?style=flat)
+
+Aplikasi web **manajemen perpustakaan digital** berbasis PHP + MySQL — tugas mata kuliah Sistem Basis Data (Sisbad). Mendukung **3 role pengguna**: Admin, Staff, dan Pembaca dengan sistem autentikasi, manajemen buku, peminjaman, denda, laporan, dan audit log.
+
+>  **Demo:** `http://localhost/sisbad/database_perpustakaan_digital/` (XAMPP)
+>  **Dokumentasi lengkap:** [`docs/`](docs/)
+
+---
+
+##  Fitur Utama
+
+| Fitur | Admin | Staff | Pembaca |
+|---|---|---|---|
+| **Manajemen Buku** |  Lihat |  CRUD |  |
+| **Manajemen User** |  CRUD |  |  |
+| **Peminjaman** |  Lihat |  CRUD |  Milik sendiri |
+| **Denda & Pembayaran** |  Lihat |  CRUD |  Milik sendiri |
+| **Ulasan & Rating** |  |  |  CRUD |
+| **Wishlist / Bookmark** |  |  |  |
+| **Laporan** |  Lihat |  Lihat |  |
+| **Audit Log** |  Lihat |  |  |
 
 ## Stack Teknologi
 
 - **Backend:** PHP murni (tanpa framework, tanpa JavaScript kecuali `confirm()` native)
-- **Database:** MySQL (via `mysqli`)
+- **Database:** MySQL (via `mysqli`) + Stored Procedure, Trigger, Function
 - **Styling:** Tailwind CSS (via CDN)
 - **Server lokal:** XAMPP
 
@@ -26,13 +50,15 @@ database_perpustakaan_digital/
 ├── admin/
 ├── staff/
 ├── pembaca/
+├── docs/                      # Dokumentasi lengkap project
+│   ├── DATABASE.md, SETUP.md, MODUL.md
+│   ├── PERMISSION_MATRIX.md, STORED_PROCEDURES.md
+│   ├── CODE_EXPLANATION.md, TESTING.md
+│   ├── proposal.md, plan.md
 ├── sql/
-│   ├── ddl.sql
-│   ├── dml.sql
-│   ├── trigger.sql
-│   ├── function.sql
-│   ├── procedure.sql
-│   └── cursor.sql
+│   ├── ddl.sql, dml.sql, trigger.sql
+│   ├── function.sql, procedure.sql, cursor.sql
+│   └── procedures/            # Stored procedure (per file)
 └── assets/img/
 ```
 
@@ -61,8 +87,11 @@ Detail lengkap matrix permission per modul: lihat [`docs/PERMISSION_MATRIX.md`](
 | [`docs/STORED_PROCEDURES.md`](docs/STORED_PROCEDURES.md) | Daftar SP, parameter, pattern pemanggilan via mysqli |
 | [`docs/PERMISSION_MATRIX.md`](docs/PERMISSION_MATRIX.md) | Matrix akses lengkap per modul per role |
 | [`docs/MODUL.md`](docs/MODUL.md) | Daftar file per modul, status pengerjaan, fitur tiap halaman |
-| [`docs/CODE_EXPLANATION.md`](docs/CODE_EXPLANATION.md) | Penjelasan alur kerja kode (bukan cuma daftar file) — peminjaman, denda, laporan, audit log, dll |
+| [`docs/CODE_EXPLANATION.md`](docs/CODE_EXPLANATION.md) | Penjelasan alur kerja kode — peminjaman, denda, laporan, audit log, dll |
 | [`docs/SETUP.md`](docs/SETUP.md) | Langkah instalasi & konfigurasi detail |
+| [`docs/TESTING.md`](docs/TESTING.md) | Panduan setup XAMPP symlink + eksekusi SQL + test API |
+| [`docs/proposal.md`](docs/proposal.md) | Proposal awal database (konversi dari docx) |
+| [`docs/plan.md`](docs/plan.md) | Checklist progress implementasi & rencana kerja |
 
 ## Catatan Pengembangan
 

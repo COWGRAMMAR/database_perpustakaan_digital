@@ -8,13 +8,13 @@
 
 ### 1.1. Pindahkan folder project ke htdocs
 
-Folder project `database_perpustakaan_digital` harus ada di dalam folder `htdocs` XAMPP.
+Folder project `database_perpustakaan_digital` harus ada di dalam `C:\xampp\htdocs\sisbad\`.
 
 Biasanya lokasinya: `C:\xampp\htdocs\`
 
-Jadi hasilnya: `C:\xampp\htdocs\database_perpustakaan_digital\`
+Jadi hasilnya: `C:\xampp\htdocs\sisbad\database_perpustakaan_digital\`
 
-Kalau project-nya masih di luar (Desktop/Documents), **copy** atau **cut-paste** ke `C:\xampp\htdocs\`.
+Kalau project-nya masih di luar (Desktop/Documents), **copy** folder `database_perpustakaan_digital` ke `C:\xampp\htdocs\sisbad\`. Buat folder `sisbad` dulu kalau belum ada.
 
 ### 1.2. Jalankan XAMPP
 
@@ -72,14 +72,14 @@ Buka endpoint-endpoint ini di browser untuk lihat JSON:
 
 | Endpoint | Fungsi |
 |----------|--------|
-| [http://localhost/database_perpustakaan_digital/api/buku.php](http://localhost/database_perpustakaan_digital/api/buku.php) | List semua buku |
-| [http://localhost/database_perpustakaan_digital/api/buku.php?id=1](http://localhost/database_perpustakaan_digital/api/buku.php?id=1) | Detail buku ID 1 |
-| [http://localhost/database_perpustakaan_digital/api/anggota.php](http://localhost/database_perpustakaan_digital/api/anggota.php) | List anggota |
-| [http://localhost/database_perpustakaan_digital/api/peminjaman.php?id_user=5](http://localhost/database_perpustakaan_digital/api/peminjaman.php?id_user=5) | Riwayat pinjam user ID 5 |
-| [http://localhost/database_perpustakaan_digital/api/denda.php?id_user=5](http://localhost/database_perpustakaan_digital/api/denda.php?id_user=5) | Cek denda user ID 5 |
-| [http://localhost/database_perpustakaan_digital/api/laporan.php?bulan=6&tahun=2026](http://localhost/database_perpustakaan_digital/api/laporan.php?bulan=6&tahun=2026) | Laporan bulan Juni 2026 |
-| [http://localhost/database_perpustakaan_digital/api/laporan.php?jenis=buku_terlaris](http://localhost/database_perpustakaan_digital/api/laporan.php?jenis=buku_terlaris) | Top 10 buku terlaris |
-| [http://localhost/database_perpustakaan_digital/api/laporan.php?jenis=anggota_teraktif](http://localhost/database_perpustakaan_digital/api/laporan.php?jenis=anggota_teraktif) | 10 anggota paling aktif |
+| [http://localhost/sisbad/database_perpustakaan_digital/api/buku.php](http://localhost/sisbad/database_perpustakaan_digital/api/buku.php) | List semua buku |
+| [http://localhost/sisbad/database_perpustakaan_digital/api/buku.php?id=1](http://localhost/sisbad/database_perpustakaan_digital/api/buku.php?id=1) | Detail buku ID 1 |
+| [http://localhost/sisbad/database_perpustakaan_digital/api/anggota.php](http://localhost/sisbad/database_perpustakaan_digital/api/anggota.php) | List anggota |
+| [http://localhost/sisbad/database_perpustakaan_digital/api/peminjaman.php?id_user=5](http://localhost/sisbad/database_perpustakaan_digital/api/peminjaman.php?id_user=5) | Riwayat pinjam user ID 5 |
+| [http://localhost/sisbad/database_perpustakaan_digital/api/denda.php?id_user=5](http://localhost/sisbad/database_perpustakaan_digital/api/denda.php?id_user=5) | Cek denda user ID 5 |
+| [http://localhost/sisbad/database_perpustakaan_digital/api/laporan.php?bulan=6&tahun=2026](http://localhost/sisbad/database_perpustakaan_digital/api/laporan.php?bulan=6&tahun=2026) | Laporan bulan Juni 2026 |
+| [http://localhost/sisbad/database_perpustakaan_digital/api/laporan.php?jenis=buku_terlaris](http://localhost/sisbad/database_perpustakaan_digital/api/laporan.php?jenis=buku_terlaris) | Top 10 buku terlaris |
+| [http://localhost/sisbad/database_perpustakaan_digital/api/laporan.php?jenis=anggota_teraktif](http://localhost/sisbad/database_perpustakaan_digital/api/laporan.php?jenis=anggota_teraktif) | 10 anggota paling aktif |
 
 Kalau API berhasil, bakal muncul teks JSON di browser.
 
@@ -87,7 +87,7 @@ Kalau API berhasil, bakal muncul teks JSON di browser.
 
 Buka di browser:
 
-> [http://localhost/database_perpustakaan_digital/old/index.html](http://localhost/database_perpustakaan_digital/old/index.html)
+> [http://localhost/sisbad/database_perpustakaan_digital/old/index.html](http://localhost/sisbad/database_perpustakaan_digital/old/index.html)
 
 Navigasi antar halaman:
 
@@ -115,7 +115,7 @@ Bisa juga test API pake Postman:
 
 **POST — Pinjam buku:**
 ```
-URL: http://localhost/database_perpustakaan_digital/api/peminjaman.php
+URL: http://localhost/sisbad/database_perpustakaan_digital/api/peminjaman.php
 Method: POST
 Headers: Content-Type: application/json
 Body (raw JSON):
@@ -124,7 +124,7 @@ Body (raw JSON):
 
 **POST — Bayar denda:**
 ```
-URL: http://localhost/database_perpustakaan_digital/api/denda.php
+URL: http://localhost/sisbad/database_perpustakaan_digital/api/denda.php
 Method: POST
 Headers: Content-Type: application/json
 Body (raw JSON):
@@ -133,7 +133,7 @@ Body (raw JSON):
 
 **POST — Login:**
 ```
-URL: http://localhost/database_perpustakaan_digital/api/auth.php?action=login
+URL: http://localhost/sisbad/database_perpustakaan_digital/api/auth.php?action=login
 Method: POST
 Headers: Content-Type: application/json
 Body (raw JSON):
@@ -158,28 +158,30 @@ Body (raw JSON):
 
 ```
 database_perpustakaan_digital/
-├── sql/                  ← Semua file SQL (implementasi)
-│   ├── ddl.sql
-│   ├── dml.sql
-│   ├── function.sql
-│   ├── trigger.sql
-│   ├── procedure.sql
-│   ├── reporting.sql
-│   └── backup.sql
+├── config/               ← Koneksi database
+├── auth/                 ← Session & role check
+├── includes/             ← Header, sidebar, footer, audit_helper
+├── admin/                ← Halaman role Admin
+├── staff/                ← Halaman role Staff
+├── pembaca/              ← Halaman role Pembaca
 ├── api/                  ← API endpoints (interface)
-│   ├── config.php
-│   ├── auth.php
-│   ├── buku.php
-│   ├── anggota.php
-│   ├── peminjaman.php
-│   ├── denda.php
-│   └── laporan.php
+│   ├── config.php, auth.php, buku.php
+│   ├── anggota.php, peminjaman.php
+│   └── denda.php, laporan.php
 ├── old/                  ← Halaman test HTML
-│   ├── index.html
-│   ├── pinjam.html
-│   ├── denda.html
-│   └── laporan.html
-├── TESTING.md            ← Prosedur ini
+│   ├── index.html, pinjam.html
+│   ├── denda.html, laporan.html
+├── sql/                  ← Semua file SQL (implementasi)
+│   ├── ddl.sql, dml.sql, function.sql
+│   ├── trigger.sql, procedure.sql
+│   ├── reporting.sql, backup.sql
+│   └── procedures/       ← Stored procedure (per file, tanpa DELIMITER)
+├── docs/                 ← Dokumentasi lengkap
+│   ├── DATABASE.md, SETUP.md, MODUL.md
+│   ├── PERMISSION_MATRIX.md, STORED_PROCEDURES.md
+│   ├── CODE_EXPLANATION.md, TESTING.md   ← Prosedur ini
+│   ├── proposal.md, plan.md
+├── assets/img/
 ├── AGENTS.md
 └── README.md
 ```
