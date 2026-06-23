@@ -36,7 +36,6 @@ if ($currentRole === 'Admin') {
 } elseif ($currentRole === 'Pembaca') {
     $menus = [
         ['label' => 'Dashboard',          'file' => 'dashboard.php',        'href' => $base . 'pembaca/dashboard.php'],
-        ['label' => 'Profil Saya',        'file' => 'profile.php',          'href' => $base . 'pembaca/profile.php'],
         ['label' => 'Katalog Buku',       'file' => 'catalog.php',          'href' => $base . 'pembaca/catalog.php'],
         ['label' => 'Riwayat Membaca',    'file' => 'reading_history.php',  'href' => $base . 'pembaca/reading_history.php'],
         ['label' => 'Wishlist',           'file' => 'wishlist.php',         'href' => $base . 'pembaca/wishlist.php'],
