@@ -16,15 +16,18 @@ BEGIN
     DECLARE v_user_id INT;
     DECLARE v_amount DECIMAL(10,2);
     DECLARE v_status VARCHAR(20);
+    DECLARE v_return_date DATE;
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
         ROLLBACK;
         SELECT 'Transaksi gagal, di-ROLLBACK' AS hasil;
     END;
 
-    -- Cek apakah fine_id valid
-    SELECT f.user_id, f.amount, f.fine_status INTO v_user_id, v_amount, v_status
+    -- Cek apakah fine_id valid (ambil user_id dan return_date lewat join ke borrowings)
+    SELECT b.user_id, f.amount, f.fine_status, b.return_date
+    INTO v_user_id, v_amount, v_status, v_return_date
     FROM fines f
+    JOIN borrowings b ON f.borrowing_id = b.id
     WHERE f.id = p_fine_id;
 
     IF v_user_id IS NULL THEN
@@ -33,6 +36,11 @@ BEGIN
 
     IF v_status = 'Lunas' THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Denda sudah lunas';
+    END IF;
+
+    -- Pastikan buku sudah dikembalikan sebelum menerima pembayaran
+    IF v_return_date IS NULL THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Pembayaran tidak diizinkan: buku belum dikembalikan';
     END IF;
 
     -- START TRANSACTION
