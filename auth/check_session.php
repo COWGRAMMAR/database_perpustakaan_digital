@@ -60,6 +60,28 @@ function redirectToDashboard() {
 
 
 function getBasePath() {
-    $folderName = 'sisbad/database_perpustakaan_digital';
-    return '/' . $folderName . '/';
+    static $basePath = null;
+    if ($basePath !== null) return $basePath;
+
+    // Normal case: project ada di dalam DOCUMENT_ROOT
+    $projectRoot = str_replace('\\', '/', dirname(__DIR__));
+    $docRoot = str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']);
+
+    if (strpos($projectRoot, $docRoot) === 0) {
+        $basePath = substr($projectRoot, strlen($docRoot));
+    } else {
+        // Cross-drive symlink: DOCUMENT_ROOT gak prefix-match dengan project path.
+        // Ambil folder pertama dari URL (SCRIPT_NAME) sebagai base path.
+        // Contoh: /perpustakaan/admin/dashboard.php → base = /perpustakaan/
+        $parts = explode('/', trim($_SERVER['SCRIPT_NAME'], '/'));
+        $basePath = '/' . ($parts[0] ?? '');
+    }
+
+    // Handle edge: project di DOCUMENT_ROOT langsung
+    if ($basePath === false || $basePath === '' || $basePath === '/') {
+        $basePath = '/';
+    }
+
+    $basePath = rtrim($basePath, '/') . '/';
+    return $basePath;
 }

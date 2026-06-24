@@ -8,7 +8,7 @@
 
 Aplikasi web **manajemen perpustakaan digital** berbasis PHP + MySQL — tugas mata kuliah Sistem Basis Data (Sisbad). Mendukung **3 role pengguna**: Admin, Staff, dan Pembaca dengan sistem autentikasi, manajemen buku, peminjaman, denda, laporan, dan audit log.
 
->  **Demo:** `http://localhost/sisbad/database_perpustakaan_digital/` (XAMPP)
+>  **Demo:** `http://localhost/<NAMA_FOLDER>/` (XAMPP)
 >  **Dokumentasi lengkap:** [`docs/`](docs/)
 
 ---
@@ -36,7 +36,7 @@ Aplikasi web **manajemen perpustakaan digital** berbasis PHP + MySQL — tugas m
 ## Struktur Folder
 
 ```
-database_perpustakaan_digital/
+<NAMA_FOLDER>/
 ├── index.php, login.php, signup.php, logout.php
 ├── config/
 │   └── database.php          # koneksi mysqli
@@ -64,10 +64,10 @@ database_perpustakaan_digital/
 
 ## Cara Menjalankan
 
-1. Clone/copy project ke `C:\xampp\htdocs\sisbad\database_perpustakaan_digital`
+1. Clone/copy project ke `C:\xampp\htdocs\<NAMA_FOLDER>`
 2. Import database `perpustakaan_digital` via phpMyAdmin (jalankan `sql/ddl.sql`, `sql/dml.sql`, lalu seluruh trigger & stored procedure)
 3. Pastikan trigger `trg_set_due_date` dan `trg_auto_fine` sudah aktif (cek via `SHOW TRIGGERS`)
-4. Akses melalui `http://localhost/sisbad/database_perpustakaan_digital/`
+4. Akses melalui `http://localhost/<NAMA_FOLDER>/`
 
 ## Role & Akses
 

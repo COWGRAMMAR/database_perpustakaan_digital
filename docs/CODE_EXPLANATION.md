@@ -18,7 +18,7 @@ require_once '../config/database.php';
 1. `session_start()` dipanggil otomatis saat file ini di-include.
 2. `requireRole($allowedRoles)` lebih dulu memanggil `requireLogin()` → cek `$_SESSION['user_id']` ada atau tidak. Kalau tidak ada, redirect ke `login.php`.
 3. Kalau sudah login tapi role-nya (`$_SESSION['role']`) tidak ada di `$allowedRoles`, dilempar ke dashboard role-nya sendiri lewat `redirectToDashboard()` — **bukan** ke halaman error 403. Jadi Pembaca yang coba akses URL Staff secara langsung akan otomatis dibalikkan ke dashboard Pembaca, tanpa pesan apa pun.
-4. `getBasePath()` mengembalikan path absolut hardcoded `/sisbad/database_perpustakaan_digital/`. Semua redirect dan link sidebar pakai fungsi ini, supaya konsisten walau halaman diakses dari folder berbeda (`admin/`, `staff/`, `pembaca/`).
+4. `getBasePath()` mengembalikan path absolut secara dinamis berdasarkan `dirname(__DIR__)` dan `$_SERVER['DOCUMENT_ROOT']` — **tidak ada hardcode**. Semua redirect dan link sidebar pakai fungsi ini, supaya konsisten walau halaman diakses dari folder berbeda (`admin/`, `staff/`, `pembaca/`).
 
 ---
 
