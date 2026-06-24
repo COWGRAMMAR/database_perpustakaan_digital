@@ -9,20 +9,13 @@
 
 ### 1. Tempatkan project
 
-Copy/clone folder project ke:
+Clone/copy project ke folder mana pun di `C:\xampp\htdocs\`:
 
 ```
-C:\xampp\htdocs\sisbad\database_perpustakaan_digital
+C:\xampp\htdocs\<NAMA_FOLDER>
 ```
 
-> Path ini **hardcoded** di `auth/check_session.php` fungsi `getBasePath()`:
-> ```php
-> function getBasePath() {
->     $folderName = 'sisbad/database_perpustakaan_digital';
->     return '/' . $folderName . '/';
-> }
-> ```
-> Kalau lokasi/path project diubah, fungsi ini **harus disesuaikan**, atau semua redirect (login, requireRole, dll) akan salah arah.
+> **Path otomatis:** `getBasePath()` di `auth/check_session.php` sekarang mendeteksi nama folder secara dinamis — **tidak perlu edit apapun.**
 
 ### 2. Jalankan XAMPP
 
@@ -56,7 +49,7 @@ Buka [http://localhost/phpmyadmin](http://localhost/phpmyadmin), lalu jalankan f
 ### 5. Akses Aplikasi
 
 ```
-http://localhost/sisbad/database_perpustakaan_digital/
+http://localhost/<NAMA_FOLDER>/
 ```
 
 Login dengan akun dari data dummy (`sql/dml.sql`), atau signup baru (signup publik hanya untuk role **Pembaca**).
@@ -71,7 +64,7 @@ Login dengan akun dari data dummy (`sql/dml.sql`), atau signup baru (signup publ
 | Masalah | Kemungkinan Sebab | Solusi |
 |---|---|---|
 | "Koneksi gagal" / halaman blank | MySQL belum jalan, atau kredensial di `config/database.php` salah | Start MySQL di XAMPP, cek `config/database.php` |
-| Semua link redirect ke login terus | Path project tidak sesuai `getBasePath()` | Sesuaikan `$folderName` di `auth/check_session.php` |
+| Semua link redirect ke login terus | Path project tidak sesuai `getBasePath()` | `getBasePath()` sudah otomatis — pastikan project di dalam folder `htdocs` |
 | "Commands out of sync" saat panggil fitur Peminjaman/Denda/Laporan | Lupa flush `more_results()`/`next_result()` setelah `CALL` SP | Lihat pattern di `docs/STORED_PROCEDURES.md` |
 | Denda tidak otomatis muncul saat telat | Trigger `trg_auto_fine` belum aktif | Cek `SHOW TRIGGERS`, jalankan ulang `sql/trigger.sql` |
 | `due_date` peminjaman kosong/null | Trigger `trg_set_due_date` belum aktif sebelum `sp_pinjam_buku` dipanggil | Cek `SHOW TRIGGERS`, urutan import SQL harus benar |

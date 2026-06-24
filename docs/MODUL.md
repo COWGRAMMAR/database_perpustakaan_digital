@@ -47,7 +47,7 @@ Daftar lengkap file per role beserta judul halaman (`$pageTitle`) dan ringkasan 
 
 | File | Fungsi |
 |---|---|
-| `auth/check_session.php` | `requireLogin()`, `requireRole(array)`, `redirectToDashboard()`, `getBasePath()` (base path hardcoded ke `sisbad/database_perpustakaan_digital/`) |
+| `auth/check_session.php` | `requireLogin()`, `requireRole(array)`, `redirectToDashboard()`, `getBasePath()` (base path dinamis — otomatis deteksi dari `__DIR__` + `DOCUMENT_ROOT`) |
 | `config/database.php` | Koneksi mysqli |
 | `includes/header.php` / `footer.php` | Layout bersama |
 | `includes/sidebar.php` | Menu dinamis per role, highlight halaman aktif berdasarkan `basename($_SERVER['PHP_SELF'])` |

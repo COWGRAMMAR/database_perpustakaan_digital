@@ -8,13 +8,13 @@
 
 ### 1.1. Pindahkan folder project ke htdocs
 
-Folder project `database_perpustakaan_digital` harus ada di dalam `C:\xampp\htdocs\sisbad\`.
+Folder project `<NAMA_FOLDER>` harus ada di dalam `C:\xampp\htdocs\`.
 
 Biasanya lokasinya: `C:\xampp\htdocs\`
 
-Jadi hasilnya: `C:\xampp\htdocs\sisbad\database_perpustakaan_digital\`
+Jadi hasilnya: `C:\xampp\htdocs\<NAMA_FOLDER>\`
 
-Kalau project-nya masih di luar (Desktop/Documents), **copy** folder `database_perpustakaan_digital` ke `C:\xampp\htdocs\sisbad\`. Buat folder `sisbad` dulu kalau belum ada.
+Kalau project-nya masih di luar (Desktop/Documents), **copy** folder `<NAMA_FOLDER>` ke `C:\xampp\htdocs\`.
 
 ### 1.2. Jalankan XAMPP
 
@@ -72,14 +72,14 @@ Buka endpoint-endpoint ini di browser untuk lihat JSON:
 
 | Endpoint | Fungsi |
 |----------|--------|
-| [http://localhost/sisbad/database_perpustakaan_digital/api/buku.php](http://localhost/sisbad/database_perpustakaan_digital/api/buku.php) | List semua buku |
-| [http://localhost/sisbad/database_perpustakaan_digital/api/buku.php?id=1](http://localhost/sisbad/database_perpustakaan_digital/api/buku.php?id=1) | Detail buku ID 1 |
-| [http://localhost/sisbad/database_perpustakaan_digital/api/anggota.php](http://localhost/sisbad/database_perpustakaan_digital/api/anggota.php) | List anggota |
-| [http://localhost/sisbad/database_perpustakaan_digital/api/peminjaman.php?id_user=5](http://localhost/sisbad/database_perpustakaan_digital/api/peminjaman.php?id_user=5) | Riwayat pinjam user ID 5 |
-| [http://localhost/sisbad/database_perpustakaan_digital/api/denda.php?id_user=5](http://localhost/sisbad/database_perpustakaan_digital/api/denda.php?id_user=5) | Cek denda user ID 5 |
-| [http://localhost/sisbad/database_perpustakaan_digital/api/laporan.php?bulan=6&tahun=2026](http://localhost/sisbad/database_perpustakaan_digital/api/laporan.php?bulan=6&tahun=2026) | Laporan bulan Juni 2026 |
-| [http://localhost/sisbad/database_perpustakaan_digital/api/laporan.php?jenis=buku_terlaris](http://localhost/sisbad/database_perpustakaan_digital/api/laporan.php?jenis=buku_terlaris) | Top 10 buku terlaris |
-| [http://localhost/sisbad/database_perpustakaan_digital/api/laporan.php?jenis=anggota_teraktif](http://localhost/sisbad/database_perpustakaan_digital/api/laporan.php?jenis=anggota_teraktif) | 10 anggota paling aktif |
+| [http://localhost/<NAMA_FOLDER>/api/buku.php](http://localhost/<NAMA_FOLDER>/api/buku.php) | List semua buku |
+| [http://localhost/<NAMA_FOLDER>/api/buku.php?id=1](http://localhost/<NAMA_FOLDER>/api/buku.php?id=1) | Detail buku ID 1 |
+| [http://localhost/<NAMA_FOLDER>/api/anggota.php](http://localhost/<NAMA_FOLDER>/api/anggota.php) | List anggota |
+| [http://localhost/<NAMA_FOLDER>/api/peminjaman.php?id_user=5](http://localhost/<NAMA_FOLDER>/api/peminjaman.php?id_user=5) | Riwayat pinjam user ID 5 |
+| [http://localhost/<NAMA_FOLDER>/api/denda.php?id_user=5](http://localhost/<NAMA_FOLDER>/api/denda.php?id_user=5) | Cek denda user ID 5 |
+| [http://localhost/<NAMA_FOLDER>/api/laporan.php?bulan=6&tahun=2026](http://localhost/<NAMA_FOLDER>/api/laporan.php?bulan=6&tahun=2026) | Laporan bulan Juni 2026 |
+| [http://localhost/<NAMA_FOLDER>/api/laporan.php?jenis=buku_terlaris](http://localhost/<NAMA_FOLDER>/api/laporan.php?jenis=buku_terlaris) | Top 10 buku terlaris |
+| [http://localhost/<NAMA_FOLDER>/api/laporan.php?jenis=anggota_teraktif](http://localhost/<NAMA_FOLDER>/api/laporan.php?jenis=anggota_teraktif) | 10 anggota paling aktif |
 
 Kalau API berhasil, bakal muncul teks JSON di browser.
 
@@ -87,7 +87,7 @@ Kalau API berhasil, bakal muncul teks JSON di browser.
 
 Buka di browser:
 
-> [http://localhost/sisbad/database_perpustakaan_digital/old/index.html](http://localhost/sisbad/database_perpustakaan_digital/old/index.html)
+> [http://localhost/<NAMA_FOLDER>/old/index.html](http://localhost/<NAMA_FOLDER>/old/index.html)
 
 Navigasi antar halaman:
 
@@ -115,7 +115,7 @@ Bisa juga test API pake Postman:
 
 **POST — Pinjam buku:**
 ```
-URL: http://localhost/sisbad/database_perpustakaan_digital/api/peminjaman.php
+URL: http://localhost/<NAMA_FOLDER>/api/peminjaman.php
 Method: POST
 Headers: Content-Type: application/json
 Body (raw JSON):
@@ -124,7 +124,7 @@ Body (raw JSON):
 
 **POST — Bayar denda:**
 ```
-URL: http://localhost/sisbad/database_perpustakaan_digital/api/denda.php
+URL: http://localhost/<NAMA_FOLDER>/api/denda.php
 Method: POST
 Headers: Content-Type: application/json
 Body (raw JSON):
@@ -133,7 +133,7 @@ Body (raw JSON):
 
 **POST — Login:**
 ```
-URL: http://localhost/sisbad/database_perpustakaan_digital/api/auth.php?action=login
+URL: http://localhost/<NAMA_FOLDER>/api/auth.php?action=login
 Method: POST
 Headers: Content-Type: application/json
 Body (raw JSON):
@@ -157,7 +157,7 @@ Body (raw JSON):
 ## 6. Struktur Folder (Final)
 
 ```
-database_perpustakaan_digital/
+<NAMA_FOLDER>/
 ├── config/               ← Koneksi database
 ├── auth/                 ← Session & role check
 ├── includes/             ← Header, sidebar, footer, audit_helper
