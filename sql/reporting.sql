@@ -72,44 +72,45 @@ GROUP BY membership_type;
 -- Laporan 1: Buku Terlaris (All Time)
 SELECT
     b.title AS judul_buku,
-    a.author_name AS penulis,
-    c.category_name AS kategori,
-    COUNT(br.id) AS total_dipinjam
+    GROUP_CONCAT(DISTINCT a.author_name ORDER BY a.author_name SEPARATOR ', ') AS penulis,
+    GROUP_CONCAT(DISTINCT c.category_name ORDER BY c.category_name SEPARATOR ', ') AS kategori,
+    pinjam.total_dipinjam
 FROM books b
-JOIN borrowings br ON b.id = br.book_id
-JOIN book_authors ba ON b.id = ba.book_id
-JOIN authors a ON ba.author_id = a.id
-JOIN book_categories bc ON b.id = bc.book_id
-JOIN categories c ON bc.category_id = c.id
-GROUP BY b.id, b.title, a.author_name, c.category_name
-ORDER BY total_dipinjam DESC;
+JOIN (
+    SELECT book_id, COUNT(*) AS total_dipinjam
+    FROM borrowings
+    GROUP BY book_id
+) pinjam ON b.id = pinjam.book_id
+LEFT JOIN book_authors ba ON b.id = ba.book_id
+LEFT JOIN authors a ON ba.author_id = a.id
+LEFT JOIN book_categories bc ON b.id = bc.book_id
+LEFT JOIN categories c ON bc.category_id = c.id
+GROUP BY b.id, b.title, pinjam.total_dipinjam
+ORDER BY pinjam.total_dipinjam DESC;
 
--- Laporan 2: Peminjaman Per Periode (Maret 2025)
-SELECT
-    mp.full_name AS nama_member,
-    b.title AS judul_buku,
-    br.borrow_date,
-    br.due_date,
-    br.return_date,
-    br.status
+-- Laporan 2: Peminjaman Per Periode (? bisa diganti dengan int pilihan)
+SELECT mp.user_id AS ID, mp.full_name AS nama_member, bk.title AS judul_buku,
+       br.borrow_date, br.due_date, br.return_date, br.status
 FROM borrowings br
+JOIN books bk ON br.book_id = bk.id
 JOIN users u ON br.user_id = u.id
-JOIN member_profiles mp ON u.id = mp.user_id
-JOIN books b ON br.book_id = b.id
-WHERE MONTH(br.borrow_date) = 3 AND YEAR(br.borrow_date) = 2025
-ORDER BY br.borrow_date;
+LEFT JOIN member_profiles mp ON mp.user_id = u.id
+WHERE MONTH(br.borrow_date) = ? AND YEAR(br.borrow_date) = ?
+ORDER BY br.borrow_date DESC;
 
 -- Laporan 3: Total Denda Per Bulan
-SELECT
-    MONTH(p.payment_date) AS bulan,
-    YEAR(p.payment_date) AS tahun,
-    SUM(p.payment_amount) AS total_denda_masuk,
-    (SELECT SUM(amount) FROM fines WHERE fine_status = 'Belum bayar') AS total_belum_bayar,
-    SUM(CASE WHEN f.fine_status = 'Lunas' THEN f.amount ELSE 0 END) AS total_lunas
-FROM payments p
-LEFT JOIN fines f ON p.fine_id = f.id
-GROUP BY YEAR(p.payment_date), MONTH(p.payment_date)
-ORDER BY tahun, bulan;
+SELECT 
+    DATE_FORMAT(f.created_month, '%Y-%m') AS bulan,
+    SUM(f.amount) AS total_denda_masuk,
+    SUM(CASE WHEN f.fine_status='Belum bayar' THEN f.amount ELSE 0 END) AS total_belum_bayar,
+    SUM(CASE WHEN f.fine_status='Lunas' THEN f.amount ELSE 0 END) AS total_lunas
+FROM (
+    SELECT fn.*, b.due_date AS created_month
+    FROM fines fn
+    JOIN borrowings b ON fn.borrowing_id = b.id
+) f
+GROUP BY DATE_FORMAT(f.created_month, '%Y-%m')
+ORDER BY bulan DESC;
 
 -- Laporan 4: Jumlah Member Baru Per Bulan
 SELECT
@@ -135,4 +136,4 @@ LEFT JOIN books b ON bc.book_id = b.id
 LEFT JOIN reviews_ratings rr ON b.id = rr.book_id
 LEFT JOIN borrowings br ON b.id = br.book_id
 GROUP BY c.id, c.category_name
-ORDER BY total_dipinjam DESC;
+ORDER BY jumlah_buku DESC;
