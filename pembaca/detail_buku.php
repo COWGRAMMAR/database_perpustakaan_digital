@@ -153,11 +153,15 @@ $dipinjam = $conn->query("
     WHERE book_id = $book_id AND status IN ('Dipinjam', 'Terlambat')
 ")->fetch_assoc()['total'];
 
-// ===== Rating rata-rata =====
-$ratingRow = $conn->query("
-    SELECT ROUND(AVG(rating), 1) AS avg_rating, COUNT(*) AS total_review
-    FROM reviews_ratings WHERE book_id = $book_id
-")->fetch_assoc();
+// ===== Rating rata-rata (via UDF fn_avg_rating) =====
+$stmt = $conn->prepare("SELECT fn_avg_rating(?) AS avg_rating");
+$stmt->bind_param('i', $book_id);
+$stmt->execute();
+$avgRating = $stmt->get_result()->fetch_assoc()['avg_rating'];
+$stmt->close();
+
+$totalReview = $conn->query("SELECT COUNT(*) AS total FROM reviews_ratings WHERE book_id = $book_id")->fetch_assoc()['total'];
+$ratingRow = ['avg_rating' => $avgRating, 'total_review' => $totalReview];
 
 // ===== Ulasan milik sendiri (untuk pre-fill form) =====
 $myReviewStmt = $conn->prepare("SELECT rating, review_text FROM reviews_ratings WHERE user_id = ? AND book_id = ?");

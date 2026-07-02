@@ -80,7 +80,8 @@ if (in_array($statusFilter, ['Dipinjam', 'Kembali', 'Terlambat'])) {
 }
 
 $borrowings = $conn->query("
-    SELECT b.*, bk.title, mp.full_name, mp.member_number
+    SELECT b.*, bk.title, mp.full_name, mp.member_number,
+           fn_hitung_denda(b.id) AS projected_denda
     FROM borrowings b
     JOIN books bk ON b.book_id = bk.id
     JOIN member_profiles mp ON b.user_id = mp.user_id
@@ -156,6 +157,7 @@ require_once '../includes/header.php';
                         <th class="py-2 pr-2">Pinjam</th>
                         <th class="py-2 pr-2">Jatuh Tempo</th>
                         <th class="py-2 pr-2">Kembali</th>
+                        <th class="py-2 pr-2 text-right">Denda</th>
                         <th class="py-2 pr-2">Status</th>
                         <th class="py-2 pr-2 text-right">Aksi</th>
                     </tr>
@@ -169,6 +171,13 @@ require_once '../includes/header.php';
                                 <td class="py-2 pr-2 text-gray-700"><?= htmlspecialchars($b['borrow_date']) ?></td>
                                 <td class="py-2 pr-2 text-gray-700"><?= htmlspecialchars($b['due_date']) ?></td>
                                 <td class="py-2 pr-2 text-gray-700"><?= htmlspecialchars($b['return_date'] ?? '-') ?></td>
+                                <td class="py-2 pr-2 text-right text-red-600">
+                                    <?php if ($b['status'] === 'Terlambat' && empty($b['return_date'])): ?>
+                                        Rp<?= number_format($b['projected_denda'], 0, ',', '.') ?>
+                                    <?php else: ?>
+                                        <span class="text-gray-300">-</span>
+                                    <?php endif; ?>
+                                </td>
                                 <td class="py-2 pr-2">
                                     <?php
                                         $badge = $b['status'] === 'Dipinjam' ? 'bg-blue-100 text-blue-700'
@@ -190,7 +199,7 @@ require_once '../includes/header.php';
                             </tr>
                         <?php endwhile; ?>
                     <?php else: ?>
-                        <tr><td colspan="7" class="py-4 text-center text-gray-400">Belum ada data peminjaman.</td></tr>
+                        <tr><td colspan="8" class="py-4 text-center text-gray-400">Belum ada data peminjaman.</td></tr>
                     <?php endif; ?>
                 </tbody>
             </table>

@@ -36,13 +36,11 @@ CREATE TRIGGER trg_auto_fine
 AFTER UPDATE ON borrowings
 FOR EACH ROW
 BEGIN
-    DECLARE v_selisih INT;
     DECLARE v_denda DECIMAL(10,2);
 
     -- Cek apakah return_date diisi dan lebih besar dari due_date
     IF NEW.return_date IS NOT NULL AND NEW.return_date > NEW.due_date THEN
-        SET v_selisih = DATEDIFF(NEW.return_date, NEW.due_date);
-        SET v_denda = v_selisih * 1000;
+        SET v_denda = fn_hitung_denda(NEW.id);
 
         INSERT INTO fines (borrowing_id, amount, fine_status)
         VALUES (NEW.id, v_denda, 'Belum bayar');
