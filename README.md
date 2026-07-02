@@ -29,7 +29,7 @@ Aplikasi web **manajemen perpustakaan digital** berbasis PHP + MySQL — tugas m
 ## Stack Teknologi
 
 - **Backend:** PHP murni (tanpa framework, tanpa JavaScript kecuali `confirm()` native)
-- **Database:** MySQL (via `mysqli`) + Stored Procedure, Trigger, Function
+- **Database:** MySQL (via `mysqli`) + Stored Procedure, Trigger, User-Defined Function
 - **Styling:** Tailwind CSS (via CDN)
 - **Server lokal:** XAMPP
 
@@ -54,6 +54,7 @@ Aplikasi web **manajemen perpustakaan digital** berbasis PHP + MySQL — tugas m
 │   ├── DATABASE.md, SETUP.md, MODUL.md
 │   ├── PERMISSION_MATRIX.md, STORED_PROCEDURES.md
 │   ├── CODE_EXPLANATION.md, TESTING.md
+│   ├── BELAJAR.md             # Dokumentasi belajar sesuai rubrik + pipeline
 │   ├── proposal.md, plan.md
 ├── sql/
 │   ├── ddl.sql, dml.sql, trigger.sql
@@ -66,8 +67,9 @@ Aplikasi web **manajemen perpustakaan digital** berbasis PHP + MySQL — tugas m
 
 1. Clone/copy project ke `C:\xampp\htdocs\<NAMA_FOLDER>`
 2. Import database `perpustakaan_digital` via phpMyAdmin (jalankan `sql/ddl.sql`, `sql/dml.sql`, lalu seluruh trigger & stored procedure)
-3. Pastikan trigger `trg_set_due_date` dan `trg_auto_fine` sudah aktif (cek via `SHOW TRIGGERS`)
-4. Akses melalui `http://localhost/<NAMA_FOLDER>/`
+3. Import function & stored procedure: jalankan `sql/function.sql`, `sql/procedure.sql` (atau per-file di `sql/procedures/`)
+4. Pastikan trigger `trg_set_due_date` dan `trg_auto_fine` sudah aktif (cek via `SHOW TRIGGERS`)
+5. Akses melalui `http://localhost/<NAMA_FOLDER>/`
 
 ## Role & Akses
 
@@ -92,14 +94,20 @@ Detail lengkap matrix permission per modul: lihat [`docs/PERMISSION_MATRIX.md`](
 | [`docs/TESTING.md`](docs/TESTING.md) | Panduan setup XAMPP symlink + eksekusi SQL + test API |
 | [`docs/proposal.md`](docs/proposal.md) | Proposal awal database (konversi dari docx) |
 | [`docs/plan.md`](docs/plan.md) | Checklist progress implementasi & rencana kerja |
+| [`docs/BELAJAR.md`](docs/BELAJAR.md) | Dokumentasi belajar 8 rubrik + 10 pipeline — bahan matkul Sistem Basis Data |
 
 ## Catatan Pengembangan
 
-- Password user di-hash dengan **MD5**
+- Password user di-hash dengan **MD5** (untuk tugas kuliah, bukan production)
 - Signup publik hanya untuk role **Pembaca**
+- **UDF** `fn_hitung_denda` dan `fn_avg_rating` sudah terintegrasi ke trigger (`trg_auto_fine`) dan halaman PHP — jika ingin mengubah tarif denda, cukup edit `fn_hitung_denda` di `sql/function.sql`
 - Stored procedure tidak boleh dibuat ulang — gunakan versi yang sudah ada di `sql/procedures/`
 - Pattern pemanggilan SP via mysqli mengikuti aturan flush `more_results()`/`next_result()` (lihat `docs/STORED_PROCEDURES.md`)
 
 ## Status Project
 
-Seluruh modul utama (Auth, Master Data, Manajemen Buku, Manajemen User/Staff, Peminjaman, Denda & Pembayaran, Laporan, Audit Log, seluruh modul Pembaca) **sudah selesai**. Dashboard Admin & Staff sengaja dibiarkan sebagai placeholder ringkas. Dashboard Pembaca (`pembaca/dashboard.php`) berfungsi ganda sebagai halaman Profil (read-only) — menu "Profil Saya" terpisah sudah dihapus dari sidebar karena fungsinya digabung di sini. Detail lihat `docs/MODUL.md`.
+Seluruh modul utama (Auth, Master Data, Manajemen Buku, Manajemen User/Staff, Peminjaman, Denda & Pembayaran, Laporan, Audit Log, seluruh modul Pembaca) **sudah selesai**.
+
+**UDF Integration (PR #2):** Function `fn_hitung_denda` dan `fn_avg_rating` sudah tidak dead code — terintegrasi ke trigger `trg_auto_fine`, halaman rating buku (`pembaca/detail_buku.php`), dan proyeksi denda staff (`staff/borrowings.php`).
+
+Dashboard Admin & Staff sengaja dibiarkan sebagai placeholder ringkas. Dashboard Pembaca (`pembaca/dashboard.php`) berfungsi ganda sebagai halaman Profil (read-only) — menu "Profil Saya" terpisah sudah dihapus dari sidebar karena fungsinya digabung di sini. Detail lihat `docs/MODUL.md` dan `docs/BELAJAR.md`.
